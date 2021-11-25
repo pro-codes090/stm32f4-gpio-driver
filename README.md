@@ -21,7 +21,7 @@ All the examples and code have been tested on [Stm32f407vgt6 disc1 board](https:
 
 _Parameters_
 
-- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h\*** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
+- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
 
 - `uint8_t EnorDi` : Enable or Disable . macros used are ,**`ENABLE`** , **`DISABLE`** .
 
@@ -48,3 +48,47 @@ _Parameters_
 |uint8_t|GPIO_PinPUPDControl| Set internal pull up or pull down |
 |uint8_t|GPIO_PinOPType | Set the pins output type (push pull or open drain ) |
 |uint8_t|GPIO_PinAltFunMode | Set the pin for alternate functionality . set it to zero when not using |
+
+## GPIO_ReadFromInputPin()
+
+Return type : `uint8_t`
+
+Return the value of a gpio pin of a certain PORT (A,BC,....K) which is either 0 or 1 . when a pin configured in input mode and depending on where the pin is connected either to GND or VDD the function returns 0 or 1 .
+
+Refer to example code in Src directory .
+
+_Parameters_
+
+- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
+
+- `uint8_t PinNumber` : Pin number to read data from . for most stm32 micros each port has 16 pins from 0 to 15 .PinNumber definition macros are defined in **Stm32f407xx.h** header file as \*PinNumber**\*x** ( **x** : 0 ,1 ,2 ,3 .... 15 ) .
+
+## GPIO_WriteToOutputPin()
+
+Return type : `Void`
+
+Writes the Data value to a gpio pin of a certain PORT (A,BC,....K) which is either 0 or 1 . when a pin configured in Output mode and if the `PinOPType`is set to ` GPIO_OP_TYPE_PP` then a pin can have 2 states either **0** or **1** .when `PinOPType`is set to ` GPIO_OP_TYPE_OD` then a pin can only connect to only GND or floating state
+
+Refer to example code in Src directory .
+
+_Parameters_
+
+- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
+
+- `uint8_t PinNumber` : Pin number to write data to . Most stm32 micros each port has 16 pins from 0 to 15 .PinNumber definition macros are defined in **Stm32f407xx.h** header file as \*PinNumber**\*x** ( **x** : 0 ,1 ,2 ,3 .... 15 ) .
+
+- `uint8_t Value` : The value / Data to be written to a gpio pin . eiither 0 or 1 can be written to the output pin . any value other than **0** is considered as **1**
+
+# GPIO_ToggleOutputPin()
+
+Return type : `Void`
+
+Toggles the output of a gpio pin of a certain PORT (A,BC,....K) which is from **0** or **1** or from **1** to **0** when a pin configured in Output mode and if the `PinOPType`is set to ` GPIO_OP_TYPE_PP` then a pin can have 2 states either **0** or **1** .when `PinOPType`is set to ` GPIO_OP_TYPE_OD` then a pin can only connect to only GND or floating state
+
+Refer to example code in Src directory .
+
+_Parameters_
+
+- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
+
+- `uint8_t PinNumber` : Pin number to write data to . Most stm32 micros each port has 16 pins from 0 to 15 .PinNumber definition macros are defined in **Stm32f407xx.h** header file as \*PinNumber**\*x** ( **x** : 0 ,1 ,2 ,3 .... 15 ) .
