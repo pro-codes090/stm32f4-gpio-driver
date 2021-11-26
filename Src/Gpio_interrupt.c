@@ -62,16 +62,16 @@ int main(void) {
 	//IRQ configurations
 
 
-	GPIO_IRQConfig(IRQ_NO_EXTI9_5, GPIO_PIN_NO_8, ENABLE) ;
+	GPIO_IRQConfig(IRQ_NO_EXTI9_5,  ENABLE) ;
 	GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI9_5, 15) ;
 
-	GPIO_IRQConfig(IRQ_NO_EXTI9_5, GPIO_PIN_NO_6, ENABLE) ;
+	GPIO_IRQConfig(IRQ_NO_EXTI9_5,  ENABLE) ;
 	GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI9_5, 15) ;
 
-	GPIO_IRQConfig(IRQ_NO_EXTI3, GPIO_PIN_NO_3, ENABLE) ;
+	GPIO_IRQConfig(IRQ_NO_EXTI3,  ENABLE) ;
 	GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI3 , 14) ;
 
-	GPIO_IRQConfig(IRQ_NO_EXTI2, GPIO_PIN_NO_2, ENABLE) ;
+	GPIO_IRQConfig(IRQ_NO_EXTI2,  ENABLE) ;
 	GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI2 , 13) ;
 
 	while(1) ;

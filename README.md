@@ -95,10 +95,116 @@ _Parameters_
 
 # Interrupt Related APIS
 
-The driver offers three apis to work with gpio interrupts like trigger an interrupt event on a falling edge or rising edge and so on .
+#### How interrupts work in Stm32 microcontroller ?
 
-| Api name                 | Description                                                                                                                  | Optional |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
-| GPIO_IRQConfig()         | Use to Enable or Disable interrupt for a GPIO pin                                                                            | no       |
-| GPIO_IRQ_ProrityConfig() | Use to configure priority level of a interrupt                                                                               | yes      |
-| GPIO_IRQHandling()       | This function should be called inside an isr hanlder . The function disables the interrupt and logs data to itm data console | yes      |
+As per Arm cortex mx specification a microcontroller can support up to 240 different interrupts these interrupts gets issued to the processor core through a peripheral called as NVIC which stands for Nested Vectored Interrupt Controller which is a part of arm architecture . In case of stm32f4 microcontroller which is based on arm cortex m4 architecture out of 240 available interrupts only 82 interrupts have been implemented for **STM32F405xx/07xx and STM32F415xx/17xx** microcontrollers . All the gpio interrupts first goes through EXTI peripheral which is hard wired before it reaches to NVIC and then issues interrupt to the m4 core some interrupt lines reaches directly to NVIC while some goes through EXTI . This is specific to ST's microcontroller and differs from vendor to vendor .
+
+The driver offers three apis to work with gpio interrupts like trigger an interrupt event on a falling edge or rising edge , setting the priority level and a default IRQ handler .
+
+| Api name                   | Description                                                                                                                  | Optional |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `GPIO_IRQConfig()`         | Use to Enable or Disable interrupt for a GPIO pin                                                                            | no       |
+| `GPIO_IRQ_ProrityConfig()` | Use to configure priority level of an interrupt                                                                              | yes      |
+| `GPIO_IRQHandling()`       | This function should be called inside an isr hanlder at start it clears the interrupt flag and logs data to itm data console | no       |
+
+## GPIO_IRQConfig()
+
+Return type : `Void`
+
+Use to Enable or Disable interrupt for a GPIO pin . This will have effect if and only if the pin is already configured in interrupt mode (either rising or falling ) . This can be done by setting `GPIO_PinMode` to `GPIO_MODE_IT_FT` or`GPIO_MODE_IT_RT`or`GPIO_MODE_IT_RFT`
+
+> **Note:** Same pins on other ports cannot be used as interrupt pin if one is already configured on some other port . i.e if pin 14 of PORTD is configured as an interrupt pin then pin 14 of any other port cannot be used for interrupt functionality , this is by design of the microcontroller itself .
+
+Refer to example code in Src directory .
+
+_Parameters_
+
+- `uint8_t IRQ_Number` : IRQ number for any PORT having same pin number have same IRQ number , this information can be found in the reference manual on page no 372 and 377
+
+| Pin number | IRQ Number | Associated macros  |
+| ---------- | ---------- | ------------------ |
+| 0          | 6          | `IRQ_NO_EXTI0`     |
+| 1          | 7          | `IRQ_NO_EXTI1`     |
+| 2          | 8          | `IRQ_NO_EXTI2`     |
+| 3          | 9          | `IRQ_NO_EXTI3`     |
+| 4          | 10         | `IRQ_NO_EXTI4`     |
+| 5 - 9      | 23         | `IRQ_NO_EXTI9_5`   |
+| 10 - 15    | 40         | `IRQ_NO_EXTI15_10` |
+
+- ` uint8_t EnorDi` : Enable or disable the Interrupt its either 0 or 1 any non zero vaue is recognized as 1 use macro `ENABLE` or `DISABLE` better readability .
+
+## GPIO_IRQ_ProrityConfig()
+
+Return type : `Void`
+
+> every interrupt has a default priority which can be configured if needed . refer page no 372 of reference manual to find the default priority for your isr .
+
+Configures the priority for an interrupt (i.e IRQ number ) . there are 16 priority levels (0 ,1 ,2 , ...15) for any configurable interrupt , also lower is the priority number higher is the priority i .e interrupt with a priority of zero has the highest priority and interrupt with a priority of 15 has the lowest priority .
+
+Refer to example code in Src directory .
+
+_Parameters_
+
+- `uint8_t IRQ_Number` : IRQ number of the interrupt to enable .
+
+- `uint32_t Interrupt_Prority ` : Priority level which ranges from ( 0 ,1 ,2 ,3 .... 15 ) .
+
+## GPIO_IRQHandling()
+
+Return type : `Void`
+
+Default ISR handler which the user should explicitly call at the very start of the ISR routine . ISR routine is just like any other C function which the hardware call the name for these functions can be found in the startup file of stm32 project which gets auto generated and is provided by ST .
+
+Names of ISR handler for GPIO interrupts
+
+| Pin Number | Hanlder Name         |
+| ---------- | -------------------- |
+| 0          | `EXTI0_IRQHandler`   |
+| 1          | `EXTI1_IRQHandler`   |
+| 2          | `EXTI2_IRQHandler`   |
+| 3          | `EXTI3_IRQHandler`   |
+| 4          | `EXTI4_IRQHandler`   |
+| 5 - 9      | `EXTI9_5_IRQHandler` |
+| 10 - 15    | `EXTI9_5_IRQHandler` |
+
+**How to implement a basic isr in main application file ?**
+
+`#include <stdint.h>`
+`#include <stdio.h>`
+`#include "stm32f407xx.h"`
+`#include "stm32f407xx_gpio_driver.h"`
+
+`int main(void) {`
+` GPIO_Handle_t Gpiobtn ; Gpiobtn.pGPIOx = GPIOD ; Gpiobtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12 ; Gpiobtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUTPUT ; Gpiobtn.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP; Gpiobtn.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH ; Gpiobtn.GPIO_PinConfig.GPIO_PinPUPDControl =GPIO_NO_PUPD ; Gpiobtn.GPIO_PinConfig.GPIO_PinAltFunMode = 0 ;`
+
+`GPIO_IRQConfig(IRQ_NO_EXTI2, ENABLE) ;`
+`GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI2 , 13) ;`
+`while(1) ;`
+`return 0 ;`
+
+`}`
+
+`void EXTI2_IRQHandler(void){`
+`GPIO_IRQHandling(GPIO_PIN_NO_2) ;`
+`while(1);`
+`}`
+
+Refer to example code in Src directory for more .
+
+_Parameters_
+
+- `uint8_t PinNumber` : Pin number to write data to . Most stm32 micros each port has 16 pins from 0 to 15 .PinNumber definition macros are defined in **Stm32f407xx.h** header file as \*PinNumber**\*x** ( **x** : 0 ,1 ,2 ,3 .... 15 ) .
+
+# Least used APIS
+
+`GPIO_WriteToOutputPort() `
+
+Writes the Value to whole PORT**x** (**x**: A,B,C...K) . overrides the previous values ;
+
+` GPIO_ReadFromInputPort()`
+
+Returns the Value of type `uint16_t` of a whole PORT**x** (**x**: A,B,C...K) .
+
+`GPIO_DeInit()`
+
+De-initializes a GPIO PORT **x** (**x**: A,B,C...K) . i.e overrides the registers of a PORT**x** (**x**: A,B,C...K) to their reset state .

@@ -222,7 +222,7 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx , uint8_t PinNumber ) {
 }
 
 // gpio IRQ config and handling
-void GPIO_IRQConfig(uint8_t IRQ_Number , uint8_t PinNumber , uint8_t EnorDi) {
+void GPIO_IRQConfig(uint8_t IRQ_Number , uint8_t EnorDi) {
 
 
 	if (EnorDi == ENABLE ) {
