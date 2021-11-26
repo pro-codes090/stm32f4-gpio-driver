@@ -79,7 +79,7 @@ _Parameters_
 
 - `uint8_t Value` : The value / Data to be written to a gpio pin . eiither 0 or 1 can be written to the output pin . any value other than **0** is considered as **1**
 
-# GPIO_ToggleOutputPin()
+## GPIO_ToggleOutputPin()
 
 Return type : `Void`
 
@@ -92,3 +92,13 @@ _Parameters_
 - `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
 
 - `uint8_t PinNumber` : Pin number to write data to . Most stm32 micros each port has 16 pins from 0 to 15 .PinNumber definition macros are defined in **Stm32f407xx.h** header file as \*PinNumber**\*x** ( **x** : 0 ,1 ,2 ,3 .... 15 ) .
+
+# Interrupt Related APIS
+
+The driver offers three apis to work with gpio interrupts like trigger an interrupt event on a falling edge or rising edge and so on .
+
+| Api name                 | Description                                                                                                                  | Optional |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
+| GPIO_IRQConfig()         | Use to Enable or Disable interrupt for a GPIO pin                                                                            | no       |
+| GPIO_IRQ_ProrityConfig() | Use to configure priority level of a interrupt                                                                               | yes      |
+| GPIO_IRQHandling()       | This function should be called inside an isr hanlder . The function disables the interrupt and logs data to itm data console | yes      |
