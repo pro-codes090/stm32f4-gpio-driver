@@ -170,23 +170,47 @@ Names of ISR handler for GPIO interrupts
 **How to implement a basic isr in main application file ?**
 
 `#include <stdint.h>`
+
 `#include <stdio.h>`
+
 `#include "stm32f407xx.h"`
+
 `#include "stm32f407xx_gpio_driver.h"`
 
 `int main(void) {`
-` GPIO_Handle_t Gpiobtn ; Gpiobtn.pGPIOx = GPIOD ; Gpiobtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12 ; Gpiobtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUTPUT ; Gpiobtn.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP; Gpiobtn.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH ; Gpiobtn.GPIO_PinConfig.GPIO_PinPUPDControl =GPIO_NO_PUPD ; Gpiobtn.GPIO_PinConfig.GPIO_PinAltFunMode = 0 ;`
+
+` GPIO_Handle_t Gpiobtn ;`
+
+`Gpiobtn.pGPIOx = GPIOD ;`
+
+`Gpiobtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12 ;`
+
+`Gpiobtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUTPUT ;`
+
+` Gpiobtn.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;`
+
+` Gpiobtn.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH ; `
+
+`Gpiobtn.GPIO_PinConfig.GPIO_PinPUPDControl =GPIO_NO_PUPD ;`
+
+` Gpiobtn.GPIO_PinConfig.GPIO_PinAltFunMode = 0 ;`
 
 `GPIO_IRQConfig(IRQ_NO_EXTI2, ENABLE) ;`
+
 `GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI2 , 13) ;`
+
 `while(1) ;`
+
 `return 0 ;`
 
 `}`
 
 `void EXTI2_IRQHandler(void){`
+
 `GPIO_IRQHandling(GPIO_PIN_NO_2) ;`
+
 `while(1);`
+
 `}`
 
 Refer to example code in Src directory for more .
