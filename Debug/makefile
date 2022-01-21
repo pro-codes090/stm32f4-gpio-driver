@@ -12,7 +12,6 @@ RM := rm -rf
 -include drivers/Src/subdir.mk
 -include Startup/subdir.mk
 -include Src/subdir.mk
--include subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -83,7 +82,7 @@ stm32f4\ gpio\ driver.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_
 
 # Other Targets
 clean:
-	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) "stm32f4 gpio driver.elf"
+	-$(RM) default.size.stdout stm32f4\ gpio\ driver.bin stm32f4\ gpio\ driver.elf stm32f4\ gpio\ driver.list stm32f4\\ gpio\\ driver.elf
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
@@ -95,6 +94,6 @@ fail-specified-linker-script-missing:
 warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
-.PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
+.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified
 
 -include ../makefile.targets

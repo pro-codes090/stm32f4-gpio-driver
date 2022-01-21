@@ -39,16 +39,12 @@ int main (void ){
 
 
 
-	GPIO_WriteToOutputPin(GPIOD, GPIO_PIN_NO_12, GPIO_PIN_SET) ;
+	GPIO_WriteToOutputPin(GPIOD, GPIO_PIN_NO_12, GPIO_PIN_SET);
 
 	while(1){
-
-	GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_13) ;
-	delay() ;
-	GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_13) ;
+		GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_13);
 		delay();
 	}
-
 	return 0 ;
 }
 
