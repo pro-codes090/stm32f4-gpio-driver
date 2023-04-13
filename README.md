@@ -1,19 +1,19 @@
 # stm32f4-gpio-driver
 
-GPIO Bare metal drivers for stm32 f4 family of microcontrollers written in C from scratch .The driver allows user to configure the gpio pins of stm32 microcontroller in Input Mode , Output mode , Alternate function mode , interrupt mode and configure interrupt priority . The driver also exposes apis to read and write data to and from gpio pins and enable and disable interrupts .
+GPIO Bare metal drivers for stm32 f4 family of microcontrollers written in C from scratch. The driver allows user to configure the gpio pins of stm32 microcontroller in Input Mode, Output mode, Alternate function mode, interrupt mode and configure interrupt priority. The driver also exposes apis to read and write data to and from gpio pins and enable and disable interrupts.
 
 ## Project file structure
 
-**Src** : The Src folder contains the main application file ( main.c ) . The user might change the contents of the file if needed . The folder contains example code each example with its own source file .
+**Src** : The Src folder contains the main application file ( main.c ). The user might change the contents of the file if needed. The folder contains example code each example with its own source file.
 
-**drivers** : folder contains further sub folder **Src** and **Inc** .
+**drivers** : folder contains further sub folder **Src** and **Inc**.
 
 - **Src** : Src folder contains driver source (.c) file which has all the driver apis the application file uses
-- **Inc** : Inc folder contains the driver header (.h) file which has all the function prototypes and configuration macros .
+- **Inc** : Inc folder contains the driver header (.h) file which has all the function prototypes and configuration macros.
 
 # driver apis Usage
 
-All the examples and code have been tested on [Stm32f407vgt6 disc1 board](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) if you own a different board from st of F4 family no changes should be made to the code
+All the examples and code have been tested on [Stm32f407vgt6 disc1 board](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) if you own a different board from ST of F4 family no changes should be made to the code
 
 ## GPIO_PeripClockControl ()
 
@@ -21,9 +21,9 @@ All the examples and code have been tested on [Stm32f407vgt6 disc1 board](https:
 
 _Parameters_
 
-- `GPIO_RegDef_t *pGPIOx ` : Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
+- `GPIO_RegDef_t *pGPIOx `: Base address of Gpio Port . base address for Ports are defined in **Stm32f407xx.h** header file as **`GPIOA`** ,**`GPIOB`** ,**`GPIOC`** .... ,**`GPIOK`**
 
-- `uint8_t EnorDi` : Enable or Disable . macros used are ,**`ENABLE`** , **`DISABLE`** .
+- `uint8_t EnorDi`: Enable or Disable . macros used are: **`ENABLE`** , **`DISABLE`** .
 
 ## GPIO_Init()
 
@@ -169,49 +169,41 @@ Names of ISR handler for GPIO interrupts
 
 **How to implement a basic isr in main application file ?**
 
-`#include <stdint.h>`
+```c
+#include <stdint.h>
+#include <stdio.h>
 
-`#include <stdio.h>`
+#include "stm32f407xx.h"
+#include "stm32f407xx_gpio_driver.h"
 
-`#include "stm32f407xx.h"`
+int main(void) {
+  GPIO_Handle_t Gpiobtn;
 
-`#include "stm32f407xx_gpio_driver.h"`
+  Gpiobtn.pGPIOx = GPIOD;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinNumber         = GPIO_PIN_NO_12;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinMode           = GPIO_MODE_OUTPUT;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinOPType         = GPIO_OP_TYPE_PP;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinSpeed          = GPIO_SPEED_HIGH;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinPUPDControl    = GPIO_NO_PUPD;
+  Gpiobtn.GPIO_PinConfig.GPIO_PinAltFunMode     = 0;
 
-`int main(void) {`
+  GPIO_IRQConfig(IRQ_NO_EXTI2, ENABLE);
+  GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI2, 13);
 
-` GPIO_Handle_t Gpiobtn ;`
+  while (1) {
+    /* TODO */
+  }
+  return 0;
+}
 
-`Gpiobtn.pGPIOx = GPIOD ;`
+void EXTI2_IRQHandler(void) {
+  GPIO_IRQHandling(GPIO_PIN_NO_2);
 
-`Gpiobtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12 ;`
-
-`Gpiobtn.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUTPUT ;`
-
-` Gpiobtn.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;`
-
-` Gpiobtn.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH ; `
-
-`Gpiobtn.GPIO_PinConfig.GPIO_PinPUPDControl =GPIO_NO_PUPD ;`
-
-` Gpiobtn.GPIO_PinConfig.GPIO_PinAltFunMode = 0 ;`
-
-`GPIO_IRQConfig(IRQ_NO_EXTI2, ENABLE) ;`
-
-`GPIO_IRQ_ProrityConfig(IRQ_NO_EXTI2 , 13) ;`
-
-`while(1) ;`
-
-`return 0 ;`
-
-`}`
-
-`void EXTI2_IRQHandler(void){`
-
-`GPIO_IRQHandling(GPIO_PIN_NO_2) ;`
-
-`while(1);`
-
-`}`
+  while (1) {
+    /* TODO */
+  }
+}
+```
 
 Refer to example code in Src directory for more .
 
